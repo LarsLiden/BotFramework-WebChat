@@ -6,11 +6,16 @@ import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
 import { ChatActions, sendMessage, sendFiles } from './Store';
-
-interface Props {
+/*
+export interface ReceivedProps {
+    focus: ConstrainBooleanParameters
+}
+*/
+export interface Props {
     inputText: string,
     strings: Strings,
     listening: boolean,
+    focusInput: boolean
 
     onChangeText: (inputText: string) => void
 
@@ -27,6 +32,10 @@ export interface ShellFunctions {
 class ShellContainer extends React.Component<Props> implements ShellFunctions {
     private textInput: HTMLInputElement;
     private fileInput: HTMLInputElement;
+
+    componentWillReceiveProps() {
+        setTimeout(this.textInput.focus(), 1500);
+    }
 
     private sendMessage() {
         if (this.props.inputText.trim().length > 0) {
@@ -204,7 +213,8 @@ export const Shell = connect(
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
-        stopListening: () => dispatchProps.stopListening()
+        stopListening: () => dispatchProps.stopListening(),
+        focusInput: ownProps.focusInput
     }), {
         withRef: true
     }

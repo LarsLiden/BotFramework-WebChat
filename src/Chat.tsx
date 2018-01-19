@@ -24,7 +24,9 @@ export interface ChatProps {
     selectedActivity?: BehaviorSubject<ActivityOrID>,
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
-    resize?: 'none' | 'window' | 'detect'
+    resize?: 'none' | 'window' | 'detect',
+    hideInput?: boolean,
+    focusInput?: boolean
 }
 
 import { History } from './History';
@@ -147,7 +149,9 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     private saveHistoryRef(historyWrapper: any) {
-        this.historyRef = historyWrapper.getWrappedInstance();
+        if (historyWrapper) {
+            this.historyRef = historyWrapper.getWrappedInstance();
+        }
     }
 
     private saveShellRef(shellWrapper: any) {
@@ -241,7 +245,11 @@ export class Chat extends React.Component<ChatProps, {}> {
                             ref={ this._saveHistoryRef }
                         />
                     </MessagePane>
-                    <Shell ref={ this._saveShellRef } />
+                    {this.props.hideInput ? null : 
+                        <Shell 
+                            ref={ this._saveShellRef }
+                            focusInput={this.props.focusInput}
+                            />}
                     { resize }
                 </div>
             </Provider>
